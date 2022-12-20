@@ -1,0 +1,6 @@
+.heroesContainer {
+    display: flex;
+    justify-content: flex-start;
+    gap: .5rem;
+    flex-wrap: wrap;
+}

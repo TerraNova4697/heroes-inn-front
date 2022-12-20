@@ -1,0 +1,30 @@
+.characterList {
+    display: inline-block;
+    margin: 1em;
+    padding: 1em;
+    background-color: #111111;
+    border-radius: 0.5em;
+    box-shadow: 2px 2px 4px #000000;
+  }
+  .characterList h2 {
+    font-size: 2em;
+    margin-top: 0;
+    margin-bottom: 0.25em;
+    color: #eeeeee;
+    text-align: center;
+  }
+  .characterList p {
+    font-size: 1em;
+    margin-top: 0;
+    color: #eeeeee;
+    text-align: center;
+  }
+
+  .heroImage {
+    height: 200px;
+    border-radius: 0.5em;
+    margin-bottom: 0.5em;
+    object-fit: cover;
+    object-position: 0% 1%; 
+    width: 250px;
+  }

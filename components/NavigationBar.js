@@ -60,11 +60,17 @@ export function NavigationBar() {
       .then((response) => {
         localStorage.removeItem('token')
         setIsLoggedIn(false)
+        Router.push('/')
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const toTavernClicked = (event) => {
+    event.preventDefault()
+    Router.push('/heroes-list')
+  }
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -97,14 +103,23 @@ export function NavigationBar() {
             <>
               <span style={{ color: "white" }}>Привет, {username}</span>
               <ul className="nav justify-content-end">
+              { !Router.pathname.includes('heroes-list') ? 
                 <li className="nav-item">
-                  <Link
+                  <Link className="btn btn-light" href={'/heroes-list'}>
+                    В таверну
+                  </Link>
+                </li> :
+                null
+               }
+                
+                <li className="nav-item">
+                  <a
                     className="btn btn-outline-light"
                     onClick={onLogoutClicked}
                     href="#"
                   >
                     Выйти
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </>
@@ -112,17 +127,17 @@ export function NavigationBar() {
             <>
               <ul className="nav justify-content-end">
                 <li className="nav-item">
-                  <button
+                  <Link
                     className="btn btn-outline-light"
-                    onClick={onLoginClicked}
+                    href={'/login'}
                   >
                     Войти
-                  </button>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <button className="btn btn-light" onClick={onRegisterClicked}>
+                  <Link className="btn btn-light" href={'/register'}>
                     Зарегистрироваться
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </>
