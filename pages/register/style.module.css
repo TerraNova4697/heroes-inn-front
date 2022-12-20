@@ -1,0 +1,5 @@
+.centeredElement {
+    display: flex;
+    padding-top: 8rem;
+    justify-content: center;
+}

@@ -11,6 +11,10 @@ export function NavigationBar({ loggedIn }) {
     const onLoginClicked = () => {
         Router.push('/login')
     }
+
+    const onRegisterClicked = () => {
+        Router.push('/register')
+    }
     
     useEffect(() => {
         if (loggedIn) {
@@ -56,7 +60,7 @@ export function NavigationBar({ loggedIn }) {
                             <button className="btn btn-outline-light" onClick={onLoginClicked}>Войти</button>
                         </li>
                         <li className="nav-item">
-                            <a className="btn btn-light" href="#">Зарегистрироваться</a>
+                            <button className="btn btn-light" onClick={onRegisterClicked}>Зарегистрироваться</button>
                         </li>
                         </ul>
                         </>}
