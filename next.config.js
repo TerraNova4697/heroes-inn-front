@@ -4,15 +4,20 @@ const nextConfig = {
   swcMinify: true,
 
   images: {
+    domains: ["http://127.0.0.1:8000"],
+  },
+};
+
+module.exports = {
+  reactStrictMode: false,
+  swcMinify: true,
+  images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'i.imgur.com',
-        port: '',
-        pathname: '',
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '8000',
       },
     ],
   },
-}
-
-module.exports = nextConfig
+};

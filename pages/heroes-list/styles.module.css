@@ -4,3 +4,28 @@
     gap: .5rem;
     flex-wrap: wrap;
 }
+
+.addCharacterContainer {
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.addCharacterContainer p {
+    text-align: center;
+}
+.addCharacterContainer a {
+    border: 1px solid transparent;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+.addCharacterButton {
+    height:200px;
+    width: 200px;
+    transition: .2s all;
+}
+.addCharacterButton:hover {
+    transform: scale(1.05) translate(0, -5px);
+}
