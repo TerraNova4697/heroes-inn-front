@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 const axios = require("axios").default
 import globals from "../../globals"
-import { Router } from "next/router";
+import Router from 'next/router'
 
 export default function LoginComponent() {
   const [username, setUsername] = useState('')
@@ -21,11 +21,14 @@ export default function LoginComponent() {
       globals.serverDomain + '/auth/token/login',
       bodyFormData
     ).then(response => {
-      const token = response.data.auth_tokent
+      const token = {
+        token: response.data.auth_token
+      }
       localStorage.setItem('token', JSON.stringify(token))
       alert('Вы успешно вошли в систему!')
-      Router.push('/heroes-list')
+      Router.push('/');
     }).catch(error => {
+      console.log(error)
       alert('Неверный логин или пароль')
     })
   }
