@@ -7,10 +7,6 @@ import Link from 'next/link'
 
 export default function HeroCard(props) {
 
-    useEffect(() => {
-        console.log(props)
-        console.log(props.hero.name)
-    }, [])
 
     return (
         <>

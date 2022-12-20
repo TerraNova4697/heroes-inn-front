@@ -47,7 +47,6 @@ export default function HeroesList() {
       .then((response) => {
         if (response.status === 200) {
           setHeroes(response.data);
-          console.log(response.data);
         } else {
           console.log(response.status);
         }
@@ -81,10 +80,10 @@ export default function HeroesList() {
           {heroes.map((hero) => (
             <HeroCard key={hero.id} hero={hero} />
           ))}
-          <div class={styles.addCharacterContainer}>
+          <div className={styles.addCharacterContainer}>
             <Link href={"/createHero"}>
               <Image
-                class={styles.addCharacterButton}
+                className={styles.addCharacterButton}
                 src={addCharacterPicture}
                 width="250"
                 height="250"
