@@ -1,0 +1,90 @@
+.generalInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+}
+
+.generalInfoRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.generalInfoInput {
+    width: "100%"
+}
+
+.columnModificatorsGroup {
+    display: flex;
+}
+
+.columnModificators {
+    display: flex;
+    flex-direction: column;
+}
+
+.otherStats {
+    margin-left: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.checkboxContainer {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 1.4rem;
+    align-items: center;
+}
+
+.checkboxLabel {
+    width: 100%;
+    text-align: center;
+}
+
+.statsContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    font-size: 12px;
+
+}
+
+.statsRow {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    /* padding-top: 2px;
+    padding-bottom: 2px; */
+    padding-left: 5px;
+    padding-right: 2px;
+}
+
+.customInput {
+    background-color: white;
+    border: none;
+    border-bottom: 1px solid black;
+    width: 30px;
+    line-height: 14px;
+    font-size: 12px;
+    color: black;
+    text-align: center;
+}
+
+.hintWord {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 3px;
+    line-height: 13px;
+}
+
+.checkboxLabelAlignLeft {
+    text-align: start;
+    padding-left: 8px;
+}
+
+.marginBlock {
+    margin: 1rem 0;
+}
