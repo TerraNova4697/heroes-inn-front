@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import styles from "./styles.module.css";
+import defaultPicture from '../../public/default-hero-image.jpg'
+import Image from 'next/image'
 
 export default function CharacterSheet() {
   const [name, setName] = useState("");
@@ -80,20 +82,67 @@ export default function CharacterSheet() {
   const [passiveWisdom, setPassiveWisdom] = useState(0)
   const [otherProfsAndLanguages, setOtherProfsAndLanguages] = useState('')
 
+  const [armorClass, setArmorClass] = useState('')
+  const [initianive, setInitiative] = useState('')
+  const [speed, setSpeed] = useState('')
+
+  const [hitPoints, setHitPoints] = useState('')
+  const [maxHitPoints, setMaxHitPoints] = useState('')
+  const [temporaryHitPoints, setTemporaryHitPoints] = useState('')
+
+  const [deathSavesSuccesses, setDeathSavesSuccesses] = useState(0)
+  const [deathSavesFailures, setDeathSavesFailures] = useState(0)
+  const [dsSuccessFirst, setDSSuccessFirst] = useState(false)
+  const [dsSuccessSecond, setDSSuccessSecond] = useState(false)
+  const [dsSuccessThird, setDSSuccessThird] = useState(false)
+  const [dsFailureFirst, setDSFailureFirst] = useState(false)
+  const [dsFailureSecond, setDSFailureSecond] = useState(false)
+  const [dsFailureThird, setDSFailureThird] = useState(false)
+
+  const [attacksAndSpellcasting, setAttacksAndSpellcasting] = useState('')
+
+  const [goldCoins, setGoldCoins] = useState('')
+  const [silverCoins, setSilverCoins] = useState('')
+  const [copperCoins, setCopperCoins] = useState('')
+  const [electronCoins, setElectronCoins] = useState('')
+  const [platinumCoins, setPlatinumCoins] = useState('')
+
+  const [equipment, setEquipment] = useState('')
+
+  const [heroImg, setHeroImg] = useState(defaultPicture)
+  const [selectedFile, setSelectedFile] = useState()
+
+  const [personalityTraits, setPersonalityTraits] = useState('')
+  const [ideals, setIdeals] = useState('')
+  const [bonds, setBonds] = useState('')
+  const [flaws, setFlaws] = useState('')
+
+  const [featuresAndTraits, setFeaturesAndTraits] = useState('')
+
   const goClicked = (event) => {
     event.preventDefault();
     console.log();
     console.log();
-    console.log(name);
-    console.log(heroClass);
-    console.log(level);
-    console.log(background);
-    console.log(race);
-    console.log(alignment);
-    console.log(experience);
-    console.log();
+    console.log(deathSavesFailures);
+    console.log(dsFailureFirst, dsFailureSecond, dsFailureThird)
     console.log();
   };
+
+  useEffect(() => {
+    let pointsCount = 0;
+    if (dsSuccessFirst) {pointsCount += 1}
+    if (dsSuccessSecond) {pointsCount += 1}
+    if (dsSuccessThird) {pointsCount += 1}
+    setDeathSavesSuccesses(pointsCount)
+  }, [dsSuccessFirst, dsSuccessSecond, dsSuccessThird])
+
+  useEffect(() => {
+    let pointsCount = 0;
+    if (dsFailureFirst) {pointsCount += 1}
+    if (dsFailureSecond) {pointsCount += 1}
+    if (dsFailureThird) {pointsCount += 1}
+    setDeathSavesFailures(pointsCount)
+  }, [dsFailureFirst, dsFailureSecond, dsFailureThird])
 
   useEffect(() => {
     if((strength - 10) < 0) {
@@ -658,6 +707,293 @@ export default function CharacterSheet() {
                 <Form.Group>
                   <Form.Control as="textarea" rows={6} value={otherProfsAndLanguages} onChange={event => setOtherProfsAndLanguages(event.target.value)} />
                   <p className={styles.hintWord}>Другие умения и языки</p>
+                </Form.Group>
+              </div>
+            </Col>
+
+            <Col lg={4}>
+              <div className={styles.currentCharacterStatusTraits}>
+                <div className={styles.statusTraitsRow}>
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={armorClass} 
+                      onChange={event => setArmorClass(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      Модификатор брони
+                    </Form.Label>
+                  </FormGroup>
+                  
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={initianive} 
+                      onChange={event => setInitiative(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      Инициатива
+                    </Form.Label>
+                  </FormGroup>
+
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={speed} 
+                      onChange={event => setSpeed(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      Модификатор брони
+                    </Form.Label>
+                  </FormGroup>
+                </div>
+
+                <div className={styles.statusTraitsRow}>
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={hitPoints} 
+                      onChange={event => setHitPoints(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      ОЗ, текущие
+                    </Form.Label>
+                  </FormGroup>
+                  
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={temporaryHitPoints} 
+                      onChange={event => setTemporaryHitPoints(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      ОЗ, временные
+                    </Form.Label>
+                  </FormGroup>
+
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={maxHitPoints} 
+                      onChange={event => setMaxHitPoints(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      ОЗ, макс
+                    </Form.Label>
+                  </FormGroup>
+                </div>
+
+                <div className={styles.statsContainer} >
+                  <div className={styles.statusTraitsRow}>
+                    <div className={styles.statusTraitsColumn + ' ' + styles.maxWidth}>
+                      <div className={styles.statusTraitsRow} style={{justifyContent: "space-evenly", marginTop: ".4rem", marginBottom: ".2rem"}}>
+                          <FormGroup>
+                            <Form.Check
+                              inline
+                              type='checkbox'
+                              style={{margin: "0"}}
+                              value={dsSuccessFirst}
+                              onChange={() => setDSSuccessFirst(current => !current)}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Form.Check
+                              inline
+                              type="checkbox"
+                              style={{margin: "0"}}
+                              value={dsSuccessSecond}
+                              onChange={() => setDSSuccessSecond(current => !current)}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Form.Check
+                              inline
+                              type="checkbox"
+                              style={{margin: "0"}}
+                              value={dsSuccessThird}
+                              onChange={() => setDSSuccessThird(current => !current)}
+                            />
+                          </FormGroup>
+                          
+                      </div>
+                      <p className={styles.hintWord}>Успехи</p>
+                    </div>
+                    <div className={styles.statusTraitsColumn + ' ' + styles.maxWidth}>
+                        <div className={styles.statusTraitsRow} style={{justifyContent: "space-evenly", marginTop: ".4rem", marginBottom: ".2rem"}}>
+                            <Form.Check
+                              inline
+                              name="group1"
+                              type='checkbox'
+                              style={{margin: "0"}}
+                              value={dsFailureFirst}
+                              onChange={() => setDSFailureFirst(current => !current)}
+                            />
+                            <Form.Check
+                              inline
+                              name="group1"
+                              type="checkbox"
+                              style={{margin: "0"}}
+                              value={dsFailureSecond}
+                              onChange={() => setDSFailureSecond(current => !current)}
+                            />
+                            <Form.Check
+                              inline
+                              name="group1"
+                              type="checkbox"
+                              style={{margin: "0"}}
+                              value={dsFailureThird}
+                              onChange={() => setDSFailureThird(current => !current)}
+                            />
+                        </div>
+                      <p className={styles.hintWord}>Провалы</p>
+                    </div>
+                  </div>
+                    
+                  
+                  
+                  
+                    
+                  <p className={styles.hintWord}>Спасброски от смерти</p>
+                  
+                </div>
+
+                <div className={styles.statsContainer}>
+                  <Form.Group>
+                    <Form.Control as="textarea" rows={6} value={attacksAndSpellcasting} onChange={event => setAttacksAndSpellcasting(event.target.value)} />
+                    <p className={styles.hintWord}>Атаки и заклинания</p>
+                  </Form.Group>
+                </div>
+
+                <div className={styles.statusTraitsRow} style={{margin: "1rem 0"}}>
+                  <div className={styles.statusTraitsColumn}>
+                    <input 
+                      type="text" 
+                      value={goldCoins}
+                      onChange={event => {setGoldCoins(event.target.value)}}
+                      className={styles.customInput} 
+                      style={{fontSize: "16px"}}
+                      />
+                    <p className={styles.hintWord} style={{fontSize: "16px"}}>ЗМ</p>
+                  </div>
+                  <div className={styles.statusTraitsColumn}>
+                    <input 
+                      type="text" 
+                      value={silverCoins}
+                      onChange={event => {setSilverCoins(event.target.value)}}
+                      className={styles.customInput} 
+                      style={{fontSize: "16px"}}
+                      />
+                    <p className={styles.hintWord} style={{fontSize: "16px"}}>СМ</p>
+                  </div>
+                  <div className={styles.statusTraitsColumn}>
+                    <input 
+                      type="text" 
+                      value={copperCoins}
+                      onChange={event => {setCopperCoins(event.target.value)}}
+                      className={styles.customInput} 
+                      style={{fontSize: "16px"}}
+                      />
+                    <p className={styles.hintWord} style={{fontSize: "16px"}}>ММ</p>
+                  </div>
+                  <div className={styles.statusTraitsColumn}>
+                    <input 
+                      type="text" 
+                      value={electronCoins}
+                      onChange={event => {setElectronCoins(event.target.value)}}
+                      className={styles.customInput} 
+                      style={{fontSize: "16px"}}
+                      />
+                    <p className={styles.hintWord} style={{fontSize: "16px"}}>ЭМ</p>
+                  </div>
+                  <div className={styles.statusTraitsColumn}>
+                    <input 
+                      type="text" 
+                      value={platinumCoins}
+                      onChange={event => {setPlatinumCoins(event.target.value)}}
+                      className={styles.customInput} 
+                      style={{fontSize: "16px"}}
+                      />
+                    <p className={styles.hintWord} style={{fontSize: "16px"}}>ПМ</p>
+                  </div>
+                </div>
+
+                <div className={styles.statsContainer}>
+                  <Form.Group>
+                    <Form.Control as="textarea" rows={12} value={equipment} onChange={event => setEquipment(event.target.value)} />
+                    <p className={styles.hintWord}>Снаряжение</p>
+                  </Form.Group>
+                </div>
+              </div>
+            </Col>
+
+            <Col lg={4}>
+              <Image src={heroImg ? heroImg : defaultPicture} className={styles.heroImage} width="250" height="200" alt={ name }/>
+              <FormGroup>
+                <Form.Control
+                  type="file"
+                  name="file"
+                  style={{marginBottom: "1rem"}}
+                  onChange={({target}) => {
+                    if(target.files) {
+                      const file = target.files[0];
+                      setHeroImg(URL.createObjectURL(file));
+                      setSelectedFile(file)
+                    }
+                  }}
+                  // isInvalid={!!errors.file}
+                />
+              </FormGroup>
+            
+              <div className={styles.statsContainer}>
+                <Form.Group>
+                  <Form.Control as="textarea" rows={2} value={personalityTraits} onChange={event => setPersonalityTraits(event.target.value)} />
+                  <p className={styles.hintWord}>Персональные черты</p>
+                </Form.Group>
+              </div>
+
+              <div className={styles.statsContainer}>
+                <Form.Group>
+                  <Form.Control as="textarea" rows={2} value={ideals} onChange={event => setIdeals(event.target.value)} />
+                  <p className={styles.hintWord}>Идеалы</p>
+                </Form.Group>
+              </div>
+
+              <div className={styles.statsContainer}>
+                <Form.Group>
+                  <Form.Control as="textarea" rows={2} value={bonds} onChange={event => setBonds(event.target.value)} />
+                  <p className={styles.hintWord}>Привязанности</p>
+                </Form.Group>
+              </div>
+
+              <div className={styles.statsContainer}>
+                <Form.Group>
+                  <Form.Control as="textarea" rows={2} value={flaws} onChange={event => setFlaws(event.target.value)} />
+                  <p className={styles.hintWord}>Пороки</p>
+                </Form.Group>
+              </div>
+
+              <div className={styles.statsContainer}>
+                <Form.Group>
+                  <Form.Control as="textarea" rows={12} value={featuresAndTraits} onChange={event => setFeaturesAndTraits(event.target.value)} />
+                  <p className={styles.hintWord}>Особенности и способности</p>
                 </Form.Group>
               </div>
             </Col>

@@ -46,7 +46,7 @@
 .statsContainer {
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     font-size: 12px;
 
 }
@@ -80,6 +80,10 @@
     line-height: 13px;
 }
 
+.maxWidth {
+    width: 100%;
+}
+
 .checkboxLabelAlignLeft {
     text-align: start;
     padding-left: 8px;
@@ -88,3 +92,30 @@
 .marginBlock {
     margin: 1rem 0;
 }
+
+.currentCharacterStatusTraits {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+}
+
+.statusTraitsRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.statusTraitsColumn {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.heroImage {
+    height: 400px;
+    border-radius: 0.5em;
+    margin-bottom: 0.5em;
+    object-fit: cover;
+    object-position: 0% 1%; 
+    width: 100%;
+  }
