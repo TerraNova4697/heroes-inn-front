@@ -3,6 +3,8 @@ import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import styles from "./styles.module.css";
 import defaultPicture from '../../public/default-hero-image.jpg'
 import Image from 'next/image'
+const axios = require("axios").default
+import globals from "../../globals";
 
 export default function CharacterSheet() {
   const [name, setName] = useState("");
@@ -99,6 +101,7 @@ export default function CharacterSheet() {
   const [dsFailureSecond, setDSFailureSecond] = useState(false)
   const [dsFailureThird, setDSFailureThird] = useState(false)
 
+  const [weapons, setWeapons] = useState([{id: 1, name: "Меч", damage: "1к6", typeOfDamage: 'Режущий'}, {id: 2, name: "Булава", damage: "1к6", typeOfDamage: 'Режущий'}, {id: 3, name: "Лук", damage: "1к6", typeOfDamage: 'Режущий'}])
   const [attacksAndSpellcasting, setAttacksAndSpellcasting] = useState('')
 
   const [goldCoins, setGoldCoins] = useState('')
@@ -119,6 +122,9 @@ export default function CharacterSheet() {
 
   const [featuresAndTraits, setFeaturesAndTraits] = useState('')
 
+  const [isWeaponSearchOpen, setIsWeaponSearchOpen] = useState(false)
+  const [globalWeapon, setGlobalWeapon] = useState([])
+
   const goClicked = (event) => {
     event.preventDefault();
     console.log();
@@ -126,7 +132,33 @@ export default function CharacterSheet() {
     console.log(deathSavesFailures);
     console.log(dsFailureFirst, dsFailureSecond, dsFailureThird)
     console.log();
+    console.log(selectedFile)
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+
+    axios.post(globals.serverDomain + '/heroes/api/v1/image', formData)
+      .then(response => {
+        console.log(response)
+        const imageURL = globals.media + response.data.imageURL;
+        setHeroImg(imageURL);
+      }).catch(error => {
+        console.log(error)
+      })
   };
+
+  const deleteWeapon = (id) => {
+    setWeapons(weapons.filter(weapon => weapon.id !== id))
+
+    //TODO: Обновить оружие на сервере
+  }
+
+  const addWeapon = (weapon) => {
+    setWeapons([...weapons, weapon])
+  }
+
+  useEffect(() => {
+    
+  }, [selectedFile])
 
   useEffect(() => {
     let pointsCount = 0;
@@ -196,7 +228,7 @@ export default function CharacterSheet() {
 
   return (
     <>
-      <Container>
+      <Container style={{position: "relative"}}>
         <Form>
           <Row style={{ border: "solid 1px black", paddingTop: "3px" }}>
             <Col lg={5}>
@@ -866,16 +898,52 @@ export default function CharacterSheet() {
                       <p className={styles.hintWord}>Провалы</p>
                     </div>
                   </div>
-                    
-                  
-                  
-                  
-                    
                   <p className={styles.hintWord}>Спасброски от смерти</p>
-                  
                 </div>
 
                 <div className={styles.statsContainer}>
+
+                  <div className={styles.statusTraitsRow} style={{justifyContent: "flex-start", gap: "1rem"}}>
+                    <div style={{width: "30%", margin: "auto 0"}}><span>Оружие</span></div>
+                    <div style={{width: "30%", margin: "auto 0"}}><span>Урон</span></div>
+                    <div style={{width: "30%", margin: "auto 0"}}><span>Тип урона</span></div>
+                    <div style={{width: "10%"}}><span style={{fontSize: "1.2rem", visibility: "hidden"}}>&#9746;</span></div>
+
+                    
+                  </div>
+                  { weapons.map( weapon => (
+                      <div className={styles.statusTraitsRow} style={{justifyContent: "flex-start", gap: "1rem"}}>
+                        <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.name}</span></div>
+                        <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.damage}</span></div>
+                        <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.type_of_damage}</span></div>
+                        <div style={{width: "10%"}}><span style={{fontSize: "1.2rem"}} className={styles.pointer} onClick={() => deleteWeapon(weapon.id)}>&#9746;</span></div>
+                      </div>
+                    ) ) }
+
+                    <span className={styles.pointer + ' ' + styles.addButton} onClick={() => setIsWeaponSearchOpen(current => !current)}>Добавить оружие</span>
+                    { isWeaponSearchOpen ? 
+                      <div className={styles.popupSelector} style={{padding: ".5rem"}}>
+
+                        <span style={{fontSize: "1.2rem"}} className={styles.pointer + ' ' + styles.absoluteRigth} onClick={() => setIsWeaponSearchOpen(current => !current)}>&#9746;</span>
+                          <div className={styles.statusTraitsColumn} style={{gap: ".5rem"}}>
+                          <div className={styles.statusTraitsRow} style={{justifyContent: "flex-start", gap: "1rem", width: "470px"}}>
+                            <div style={{width: "30%", margin: "auto 0"}}><span>оружие</span></div>
+                            <div style={{width: "30%", margin: "auto 0"}}><span>урон</span></div>
+                            <div style={{width: "30%", margin: "auto 0"}}><span>Тип урона</span></div>
+                            {/* <div style={{width: "10%"}}><span style={{fontSize: "1.2rem"}} className={styles.pointer} onClick={() => deleteWeapon(weapon.id)}>&#9746;</span></div> */}
+                            
+                        </div>
+                        { globalWeapon.map( weapon => (
+                              <div className={styles.statusTraitsRow + ' ' + styles.pointer} style={{justifyContent: "flex-start", gap: "1rem"}} onClick={() => addWeapon(weapon)}>
+                                <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.name}</span></div>
+                                <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.damage}</span></div>
+                                <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.type_of_damage}</span></div>
+                                {/* <div style={{width: "10%"}}><span style={{fontSize: "1.2rem"}} className={styles.pointer} onClick={() => deleteWeapon(weapon.id)}>&#9746;</span></div> */}
+                              </div>
+                            ) ) }
+                        </div>
+                      </div> : null
+                    }
                   <Form.Group>
                     <Form.Control as="textarea" rows={6} value={attacksAndSpellcasting} onChange={event => setAttacksAndSpellcasting(event.target.value)} />
                     <p className={styles.hintWord}>Атаки и заклинания</p>
@@ -954,7 +1022,7 @@ export default function CharacterSheet() {
                   onChange={({target}) => {
                     if(target.files) {
                       const file = target.files[0];
-                      setHeroImg(URL.createObjectURL(file));
+                      // setHeroImg(URL.createObjectURL(file));
                       setSelectedFile(file)
                     }
                   }}
@@ -1000,6 +1068,9 @@ export default function CharacterSheet() {
           </Row>
           <Button onClick={goClicked}>GO</Button>
         </Form>
+
+        
+        
       </Container>
     </>
   );

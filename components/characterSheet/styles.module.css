@@ -119,3 +119,43 @@
     object-position: 0% 1%; 
     width: 100%;
   }
+
+  .greyBackground {
+    background-color: #bbb;
+    border-radius: 3px;
+    padding: 3px 5px;
+    /* font-size: 1rem;
+    line-height: .5rem; */
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  .addButton {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+
+  }
+
+  .popupSelector {
+    display: flex;
+    justify-content: column;
+    padding: 2rem 4rem;
+  }
+
+  .popupSelector {
+    /* display: none; */
+    position: absolute;
+    width: 500px;
+    background-color: #eee;
+    border-radius: 3px;
+    box-shadow:  0 4px 2px #222;
+    /* transform: translate(50%, 50%); */
+  }
+
+  .absoluteRigth {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+  }
