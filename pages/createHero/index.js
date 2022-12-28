@@ -17,7 +17,7 @@ export default function CreateHero() {
       </Head>
 
       <Container style={{marginTop: "40px"}}>
-        <CharacterSheet />
+        <CharacterSheet  />
       </Container>
     </MainLayout>
   );

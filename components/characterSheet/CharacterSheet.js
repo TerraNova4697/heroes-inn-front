@@ -101,7 +101,7 @@ export default function CharacterSheet() {
   const [dsFailureSecond, setDSFailureSecond] = useState(false)
   const [dsFailureThird, setDSFailureThird] = useState(false)
 
-  const [weapons, setWeapons] = useState([{id: 1, name: "Меч", damage: "1к6", typeOfDamage: 'Режущий'}, {id: 2, name: "Булава", damage: "1к6", typeOfDamage: 'Режущий'}, {id: 3, name: "Лук", damage: "1к6", typeOfDamage: 'Режущий'}])
+  const [weapons, setWeapons] = useState([])
   const [attacksAndSpellcasting, setAttacksAndSpellcasting] = useState('')
 
   const [goldCoins, setGoldCoins] = useState('')
@@ -127,23 +127,9 @@ export default function CharacterSheet() {
 
   const goClicked = (event) => {
     event.preventDefault();
-    console.log();
-    console.log();
-    console.log(deathSavesFailures);
-    console.log(dsFailureFirst, dsFailureSecond, dsFailureThird)
-    console.log();
-    console.log(selectedFile)
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-
-    axios.post(globals.serverDomain + '/heroes/api/v1/image', formData)
-      .then(response => {
-        console.log(response)
-        const imageURL = globals.media + response.data.imageURL;
-        setHeroImg(imageURL);
-      }).catch(error => {
-        console.log(error)
-      })
+  
+    
+    
   };
 
   const deleteWeapon = (id) => {
@@ -157,7 +143,30 @@ export default function CharacterSheet() {
   }
 
   useEffect(() => {
-    
+    axios.get(globals.serverDomain + '/heroes/api/v1/weapons')
+      .then(response => {
+        setGlobalWeapon([...response.data])
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
+
+  useEffect(() => {
+    if(selectedFile) {
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+
+      axios.post(globals.serverDomain + '/heroes/api/v1/image', formData)
+        .then(response => {
+          // console.log(response)
+          const imageURL = globals.media + response.data.imageURL;
+          setHeroImg(imageURL);
+        }).catch(error => {
+          console.log(error)
+        })
+    }
+
   }, [selectedFile])
 
   useEffect(() => {
@@ -912,7 +921,7 @@ export default function CharacterSheet() {
                     
                   </div>
                   { weapons.map( weapon => (
-                      <div className={styles.statusTraitsRow} style={{justifyContent: "flex-start", gap: "1rem"}}>
+                      <div className={styles.statusTraitsRow} key={weapon.id} style={{justifyContent: "flex-start", gap: "1rem"}}>
                         <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.name}</span></div>
                         <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.damage}</span></div>
                         <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.type_of_damage}</span></div>
@@ -934,7 +943,7 @@ export default function CharacterSheet() {
                             
                         </div>
                         { globalWeapon.map( weapon => (
-                              <div className={styles.statusTraitsRow + ' ' + styles.pointer} style={{justifyContent: "flex-start", gap: "1rem"}} onClick={() => addWeapon(weapon)}>
+                              <div className={styles.statusTraitsRow + ' ' + styles.pointer} style={{justifyContent: "flex-start", gap: "1rem"}} key={weapon.id} onClick={() => addWeapon(weapon)}>
                                 <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.name}</span></div>
                                 <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.damage}</span></div>
                                 <div style={{width: "30%", margin: "auto 0"}}><span className={styles.greyBackground}>{weapon.type_of_damage}</span></div>
@@ -1024,6 +1033,7 @@ export default function CharacterSheet() {
                       const file = target.files[0];
                       // setHeroImg(URL.createObjectURL(file));
                       setSelectedFile(file)
+                      // updateImage()
                     }
                   }}
                   // isInvalid={!!errors.file}
