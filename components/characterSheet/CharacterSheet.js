@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
+import Router from "next/router";
 import styles from "./styles.module.css";
 import defaultPicture from '../../public/default-hero-image.jpg'
 import Image from 'next/image'
 const axios = require("axios").default
 import globals from "../../globals";
+import Toast from '../Toast'
 
 export default function CharacterSheet() {
   const [user, setUser] = useState({})
@@ -230,9 +232,11 @@ export default function CharacterSheet() {
       globals.serverDomain + '/heroes/api/v1/createhero/',
       newHero
     ).then(response => {
-      console.log(response)
+      const toast = new Toast()
+      toast.success("Герой успешно создан!")
     }).catch(error => {
-      console.log(error)
+      const toast = new Toast()
+      toast.error(`Ошибка: ${error}`)
     })
     
     console.log(newHero)
@@ -249,26 +253,38 @@ export default function CharacterSheet() {
   }
 
   const loadUser = () => {
-    const token = JSON.parse(localStorage.getItem("token")).token;
-    axios
-      .get(globals.serverDomain + "/auth/users/me/", {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setUser(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.status === 401) {
-        }
-      });
+
+    if (localStorage.getItem('token') !== null) {
+
+      const token = JSON.parse(localStorage.getItem("token")).token;
+      axios
+        .get(globals.serverDomain + "/auth/users/me/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setUser(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.status === 401) {
+            Router.push('/login')
+          }
+        });
+
+    // Если токена нет, то остаемся не залогинены
+    } else {
+      Router.push('/login')
+    }
+    
+    
   }
 
   useEffect(() => {
+
     loadUser()
 
     axios.get(globals.serverDomain + '/heroes/api/v1/weapons')
@@ -287,7 +303,6 @@ export default function CharacterSheet() {
 
       axios.post(globals.serverDomain + '/heroes/api/v1/image', formData)
         .then(response => {
-          // console.log(response)
           const imageURL = globals.media + response.data.imageURL;
           setHeroImg(imageURL);
         }).catch(error => {

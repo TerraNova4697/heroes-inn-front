@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 const axios = require("axios").default
 import globals from "../../globals"
 import Router from "next/router";
+import Toast from "../Toast"
 
 export default function LoginComponent() {
   const [username, setUsername] = useState('')
@@ -22,14 +23,20 @@ export default function LoginComponent() {
         globals.serverDomain + '/auth/users/',
         bodyFormData
       ).then(response => {
-        alert(`Вы успешно зарегистрировались, ${response.data.username}`)
+        const toast = new Toast()
+        toast.success(`Вы успешно зарегистрировались, ${response.data.username}`)
+        // alert(`Вы успешно зарегистрировались, ${response.data.username}`)
         Router.push('/login')
       }).catch(error => {
         console.log(error)
-        alert('Неверный логин или пароль')
+        const toast = new Toast()
+        toast.error(`Ошибка ${error.message}`)
+        // alert('Неверный логин или пароль')
       })
     } else {
-      alert("Пароли не совпадают")
+      const toast = new Toast()
+      toast.error(`Пароли не совпадают`)
+      // alert("Пароли не совпадают")
     }
     
   }

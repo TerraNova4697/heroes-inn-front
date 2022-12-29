@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 const axios = require("axios").default
 import globals from "../../globals"
 import Router from 'next/router'
+import Toast from '../Toast'
 
 export default function LoginComponent() {
   const [username, setUsername] = useState('')
@@ -25,11 +26,15 @@ export default function LoginComponent() {
         token: response.data.auth_token
       }
       localStorage.setItem('token', JSON.stringify(token))
-      alert('Вы успешно вошли в систему!')
+      const toast = new Toast()
+      toast.success("Добро пожаловать в Таверну!")
+      // alert('Вы успешно вошли в систему!')
       Router.push('/');
     }).catch(error => {
       console.log(error)
-      alert('Неверный логин или пароль')
+      const toast = new Toast()
+      toast.error("Неверный логин или пароль")
+      // alert('Неверный логин или пароль')
     })
   }
 

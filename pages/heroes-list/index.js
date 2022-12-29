@@ -17,46 +17,55 @@ export default function HeroesList() {
   const [heroes, setHeroes] = useState([]);
 
   const loadUser = () => {
-    let token = JSON.parse(localStorage.getItem("token")).token;
-    axios
-      .get(globals.serverDomain + "/auth/users/me/", {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setUser(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.status === 401) {
-        }
-      });
+    if (localStorage.getItem('token') !== null) {
+
+      let token = JSON.parse(localStorage.getItem("token")).token;
+      axios
+        .get(globals.serverDomain + "/auth/users/me/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setUser(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.status === 401) {
+            Router.push('/login')
+          }
+        });
+    } else {
+      Router.push('/login')
+    }
   };
 
   const loadHeroes = () => {
-    let token = JSON.parse(localStorage.getItem("token")).token;
-    axios
-      .get(globals.serverDomain + "/heroes/api/v1/heroeslist/", {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setHeroes(response.data);
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        if (response.status === 401) {
-          // TODO: разлогинить пользователя
-        }
-      });
+    if (localStorage.getItem('token') !== null) {
+      let token = JSON.parse(localStorage.getItem("token")).token;
+      axios
+        .get(globals.serverDomain + "/heroes/api/v1/heroeslist/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setHeroes(response.data);
+          } else {
+            console.log(response.status);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.status === 401) {
+            // TODO: разлогинить пользователя
+            Router.puth('/login')
+          }
+        });
+    }
   };
 
   useEffect(() => {

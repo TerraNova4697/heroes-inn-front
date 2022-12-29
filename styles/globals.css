@@ -19,7 +19,52 @@ a {
   html {
     color-scheme: dark;
   }
-  body {
-    
+}
+
+.toast:not(.show) {
+  display: block;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+[data-component*='toast'] {
+  position: static;
+}
+[data-component*='toast'] [data-ref='form'] {
+  display: flex;
+}
+[data-component*='toast'][open].is-closing {
+  animation: disappear 0.3s;
+}
+[data-component*='toast'][open] {
+  animation: appear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+[data-component*='toast'] .btn-close {
+  margin: auto;
+  margin-inline-end: 1em;
+}
+[data-component*='toast'].toast-success .btn-close, [data-component*='toast'].toast-error .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+ }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+ }
+}
+
+@keyframes disappear {   
+  to {
+      opacity: 0;
+      transform: translateX(100%);
   }
 }
