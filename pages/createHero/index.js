@@ -1,6 +1,6 @@
 
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import CharacterSheet from "../../components/characterSheet/CharacterSheet";
 import { MainLayout } from "../../components/MainLayout";
@@ -9,6 +9,7 @@ import globals from "../../globals";
 import Router from "next/router";
 
 export default function CreateHero() {
+  const [user, setUser] = useState({})
 
   useEffect(() => {
     if (localStorage.getItem('token') !== null) {
@@ -38,7 +39,7 @@ export default function CreateHero() {
     }
   }, [])
 
-  return (
+  return ( 
     <MainLayout>
       <Head>
         <title>Heroes Inn</title>
@@ -50,9 +51,10 @@ export default function CreateHero() {
         ></link>
       </Head>
 
+      { user.id ? 
       <Container style={{marginTop: "40px"}}>
         <CharacterSheet  />
-      </Container>
-    </MainLayout>
+      </Container> : null }
+    </MainLayout> 
   );
 }

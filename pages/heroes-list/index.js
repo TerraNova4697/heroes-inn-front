@@ -73,7 +73,7 @@ export default function HeroesList() {
     loadHeroes();
   }, []);
 
-  return (
+  return ( 
     <MainLayout>
       <Head>
         <title>Таверна Героев | Логин</title>
@@ -84,6 +84,8 @@ export default function HeroesList() {
           crossorigin="anonymous"
         ></link>
       </Head>
+
+      { user.id ? 
       <Container>
         <div className={styles.heroesContainer}>
           {heroes.map((hero) => (
@@ -102,7 +104,7 @@ export default function HeroesList() {
             </Link>
           </div>
         </div>
-      </Container>
+      </Container> : null }
     </MainLayout>
   );
 }

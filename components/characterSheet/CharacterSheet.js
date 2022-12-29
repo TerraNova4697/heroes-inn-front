@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
+import { useRouter } from "next/router";
 import Router from "next/router";
 import styles from "./styles.module.css";
 import defaultPicture from '../../public/default-hero-image.jpg'
@@ -9,6 +10,8 @@ import globals from "../../globals";
 import Toast from '../Toast'
 
 export default function CharacterSheet() {
+  const { query } = useRouter()
+  
   const [user, setUser] = useState({})
 
   const [name, setName] = useState("");
@@ -271,7 +274,8 @@ export default function CharacterSheet() {
         .catch((error) => {
           console.log(error);
           if (error.status === 401) {
-            Router.push('/login')
+            const toast = new Toast()
+            toast.error("Чтобы создать персонажа, необходимо авторизоваться")
           }
         });
 
@@ -283,9 +287,116 @@ export default function CharacterSheet() {
     
   }
 
+  const loadHero = () => {
+    if ( query ) {
+      const token = JSON.parse(localStorage.getItem("token")).token;
+      console.log(query)
+      axios.get(globals.serverDomain + `/heroes/api/v1/herosheet/${query.id}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }).then(response => {
+        const hero = response.data;
+        console.log(hero.strength)
+        setHeroImg(globals.media + hero.hero_img);
+        setName(hero.name);
+        setHeroClass(hero.heroes_class);
+        setBackground(hero.background);
+        setRace(hero.race);
+        setalignment(hero.alignment);
+        setExperience(hero.exp_points);
+        setLevel(hero.level);
+        setInspiration(hero.inspiration);
+        setProficiencyBonus(hero.proficiency_bonus);
+        setArmorClass(hero.armor_class);
+        setInitiative(hero.initiative);
+        setSpeed(hero.speed);
+        setHitPoints(hero.hit_points);
+        setMaxHitPoints(hero.max_hit_points);
+        setTemporaryHitPoints(hero.temporary_hit_points);
+        setHitDice(hero.hit_dice);
+        setDeathSavesSuccesses(hero.death_saves_successes);
+        setDeathSavesFailures(hero.death_saves_failures);
+        setOtherProfsAndLanguages(hero.other_profs_and_languages);
+        setPassiveWisdom(hero.passive_wisdom);
+        setAttacksAndSpellcasting(hero.attacks_and_spellcasting);
+        setEquipment(hero.equipment);
+        setFeaturesAndTraits(hero.features_and_traits);
+        setStrength(hero.strength);
+        setDexterity(hero.dexterity);
+        setConstitution(hero.constitution);
+        setIntelligence(hero.intelligence);
+        setWisdom(hero.wisdom);
+        setCharisma(hero.charisma);
+        setStrengthSbActive(hero.strength_sb_active);
+        setStrengthSb(hero.strength_sb);
+        setDexteritySbActive(hero.dexterity_sb_active);
+        setDexteritySb(hero.dexterity_sb);
+        setConstitutionSbActive(response.data.constitution_sb_active);
+        setConstitutionSb(hero.constitution_sb);
+        setIntelligenceSbActive(hero.intelligence_sb_active);
+        setIntelligenceSb(hero.intelligence_sb);
+        setWisdomSbActive(hero.wisdom_sb_active);
+        setWisdomSb(hero.wisdom_sb);
+        setCharismaSbActive(hero.charisma_sb_active);
+        setCharismaSbActive(hero.charisma_sb_active);
+        setCharismaSb(hero.charisma_sb);
+        setAcrobaticsActive(hero.acrobatics_active);
+        setAcrobatics(hero.acrobatics);
+        setAnimHandlingActive(hero.anim_handling_active);
+        setAnimHandling(hero.anim_handling);
+        setArcanaActive(hero.arcana_active);
+        setArcana(hero.arcana);
+        setAthleticsActive(hero.athletics_active);
+        setAthletics(hero.athletics);
+        setDeceptionActive(hero.deception_active);
+        setDeception(hero.deception);
+        setHistoryActive(hero.history_active);
+        setHistory(hero.history);
+        setInsightActive(hero.insight_active);
+        setInsight(hero.insight);
+        setIntimidationActive(hero.intimidation_active);
+        setIntimidation(hero.intimidation);
+        setInvestigationActive(hero.investigation_active);
+        setInvestigation(hero.investigation);
+        setMedicineActive(hero.medicine_active);
+        setMedicine(hero.medicine);
+        setNatureActive(hero.nature_active);
+        setNature(hero.nature);
+        setPerceptionActive(hero.perception_active);
+        setPerception(hero.perception);
+        setPerformanceActive(hero.performance_active);
+        setPerformance(hero.performance);
+        setPersuasionActive(hero.persuasion_active);
+        setPersuasion(hero.persuasion);
+        setReligionActive(hero.religion_active);
+        setReligion(hero.religion);
+        setSleightOfHandActive(hero.sleight_of_hand_active);
+        setSleightOfHand(hero.sleight_of_hand);
+        setStealthActive(hero.stealth_active);
+        setStealth(hero.stealth);
+        setSurvivalActive(hero.survival_active);
+        setSurvival(hero.survival);
+        setPersonalityTraits(hero.personality_traits);
+        setIdeals(hero.ideals);
+        setBonds(hero.bonds);
+        setFlaws(hero.flaws);
+        setGoldCoins(hero.gold_coins);
+        setSilverCoins(hero.silver_coins);
+        setCopperCoins(hero.copper_coins);
+        setElectronCoins(hero.electron_coins);
+        setPlatinumCoins(hero.platinum_coins);
+
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }
+
   useEffect(() => {
 
     loadUser()
+    loadHero()
 
     axios.get(globals.serverDomain + '/heroes/api/v1/weapons')
       .then(response => {
@@ -295,6 +406,14 @@ export default function CharacterSheet() {
         console.log(error)
       })
   }, [])
+
+  useEffect(() => {
+    if (!query) {
+      return
+    }
+
+    loadHero()
+  }, [query])
 
   useEffect(() => {
     if(selectedFile) {
@@ -589,7 +708,7 @@ export default function CharacterSheet() {
                 </div>
                 <div className={styles.otherStats}>
                   <div className={styles.checkboxContainer}>
-                    <Form.Check type="checkbox" id="default-checkbox" label="" value={inspiration} onChange={event => setInspiration(current => !current)} />
+                    <Form.Check type="checkbox" id="default-checkbox" label="" checked={inspiration} value={inspiration} onChange={event => setInspiration(current => !current)} />
                     <p className={styles.checkboxLabel}>Вдохновение</p>
                   </div>
                   <div className={styles.checkboxContainer}>
@@ -604,32 +723,32 @@ export default function CharacterSheet() {
                   </div>
                   <div className={styles.statsContainer}>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox"  label="" value={strengthSbActive} onChange={event => setStrengthSbActive(current => !current)} />
+                        <Form.Check type="checkbox" checked={strengthSbActive}  label="" value={strengthSbActive} onChange={event => setStrengthSbActive(current => !current)} />
                         <input type="text" className={styles.customInput} value={strengthSb} onChange={event => setStrengthSb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Сила</span>
                     </div>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox" label="" value={dexteritySbActive} onChange={event => setDexteritySbActive(current => !current)}/>
+                        <Form.Check type="checkbox" checked={dexteritySbActive} label="" value={dexteritySbActive} onChange={event => setDexteritySbActive(current => !current)}/>
                         <input type="text" className={styles.customInput} value={dexteritySb} onChange={event => setDexteritySb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Ловкость</span>
                     </div>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox" label="" value={constitutionSbActive} onChange={event => setConstitutionSbActive(current => !current)}/>
+                        <Form.Check type="checkbox" checked={constitutionSbActive} label="" value={constitutionSbActive} onChange={event => setConstitutionSbActive(current => !current)}/>
                         <input type="text" className={styles.customInput} value={constitutionSb} onChange={event => setConstitutionSb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Телосложение</span>
                     </div>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox" label="" value={intelligenceSbActive} onChange={event => setIntelligenceSbActive(current => !current)}/>
+                        <Form.Check type="checkbox" label="" checked={intelligenceSbActive} value={intelligenceSbActive} onChange={event => setIntelligenceSbActive(current => !current)}/>
                         <input type="text" className={styles.customInput} value={intelligenceSb} onChange={event => setIntelligenceSb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Интеллект</span>
                     </div>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox" label="" value={wisdomSbActive} onChange={event => setWisdomSbActive(current => !current)}/>
+                        <Form.Check type="checkbox" label="" checked={wisdomSbActive} value={wisdomSbActive} onChange={event => setWisdomSbActive(current => !current)}/>
                         <input type="text" className={styles.customInput} value={wisdomSb} onChange={event => setWisdomSb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Мудрость</span>
                     </div>
                     <div className={styles.statsRow}>
-                        <Form.Check type="checkbox" label="" value={charismaSbActive} onChange={event => setCharismaSbActive(current => !current)}/>
+                        <Form.Check type="checkbox" label="" checked={charismaSbActive} value={charismaSbActive} onChange={event => setCharismaSbActive(current => !current)}/>
                         <input type="text" className={styles.customInput} value={charismaSb} onChange={event => setCharismaSb(event.target.value)}/>
                         <span className={styles.checkboxLabelAlignLeft}>Харизма</span>
                     </div>
@@ -642,6 +761,7 @@ export default function CharacterSheet() {
                           type="checkbox" 
                           label=""
                           value={acrobaticsActive}
+                          checked={acrobaticsActive}
                           onChange={() => setAcrobaticsActive(current => !current)} />
                         <input 
                           type="text" 
@@ -654,6 +774,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={athleticsActive}
+                          checked={athleticsActive}
                           onChange={() => setAthleticsActive(current => !current)}
                           label="" />
                         <input 
@@ -667,6 +788,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={arcanaActive}
+                          checked={arcanaActive}
                           onChange={() => setArcanaActive(current => !current)}
                           label="" />
                         <input 
@@ -680,6 +802,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={deceptionActive}
+                          checked={deceptionActive}
                           onChange={() => setDeceptionActive(current => !current)}
                           label="" />
                         <input 
@@ -693,6 +816,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={historyActive}
+                          checked={historyActive}
                           onChange={() => setHistoryActive(current => !current)}
                           label="" />
                         <input 
@@ -706,6 +830,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={insightActive}
+                          checked={insightActive}
                           onChange={() => setInsightActive(current => !current)}
                           label="" />
                         <input 
@@ -719,6 +844,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox"
                           value={intimidationActive}
+                          checked={intimidationActive}
                           onChange={() => setIntimidationActive(current => !current)} 
                           label="" />
                         <input 
@@ -732,6 +858,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox"
                           value={investigationActive}
+                          checked={investigationActive}
                           onChange={() => setInvestigationActive(current => !current)}  
                           label="" />
                         <input 
@@ -745,6 +872,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox"
                           value={medicineActive}
+                          checked={medicineActive}
                           onChange={() => setMedicineActive(current => !current)}  
                           label="" />
                         <input 
@@ -758,6 +886,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={natureActive}
+                          checked={natureActive}
                           onChange={() => setNatureActive(current => !current)}  
                           label="" />
                         <input 
@@ -771,6 +900,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={perceptionActive}
+                          checked={perceptionActive}
                           onChange={() => setPerceptionActive(current => !current)}  
                           label="" />
                         <input 
@@ -784,6 +914,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox"
                           value={performanceActive}
+                          checked={performanceActive}
                           onChange={() => setPerformanceActive(current => !current)}   
                           label="" />
                         <input 
@@ -797,6 +928,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox"
                           value={persuasionActive}
+                          checked={persuasionActive}
                           onChange={() => setPersuasionActive(current => !current)}  
                           label="" />
                         <input 
@@ -810,6 +942,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={religionActive}
+                          checked={religionActive}
                           onChange={() => setReligionActive(current => !current)}
                           label="" />
                         <input 
@@ -823,6 +956,7 @@ export default function CharacterSheet() {
                         <Form.Check
                           type="checkbox" 
                           value={sleightOfHandActive}
+                          checked={sleightOfHandActive}
                           onChange={() => setSleightOfHandActive(current => !current)}
                           label="" />
                         <input
@@ -836,6 +970,7 @@ export default function CharacterSheet() {
                         <Form.Check 
                           type="checkbox" 
                           value={stealthActive}
+                          checked={stealthActive}
                           onChange={() => setStealthActive(current => !current)}
                           label="" />
                         <input
@@ -849,6 +984,7 @@ export default function CharacterSheet() {
                         <Form.Check
                           type="checkbox" 
                           value={survivalActive}
+                          checked={survivalActive}
                           onChange={() => setSurvivalActive(current => !current)}
                           label="" />
                         <input
@@ -862,6 +998,7 @@ export default function CharacterSheet() {
                         <Form.Check
                           type="checkbox" 
                           value={animHandlingActive}
+                          checked={animHandlingActive}
                           onChange={() => setAnimHandlingActive(current => !current)}
                           label="" />
                         <input
@@ -1009,6 +1146,7 @@ export default function CharacterSheet() {
                               type='checkbox'
                               style={{margin: "0"}}
                               value={dsSuccessFirst}
+                              checked={dsSuccessFirst}
                               onChange={() => setDSSuccessFirst(current => !current)}
                             />
                           </FormGroup>
@@ -1018,6 +1156,7 @@ export default function CharacterSheet() {
                               type="checkbox"
                               style={{margin: "0"}}
                               value={dsSuccessSecond}
+                              checked={dsSuccessSecond}
                               onChange={() => setDSSuccessSecond(current => !current)}
                             />
                           </FormGroup>
@@ -1027,6 +1166,7 @@ export default function CharacterSheet() {
                               type="checkbox"
                               style={{margin: "0"}}
                               value={dsSuccessThird}
+                              checked={dsSuccessThird}
                               onChange={() => setDSSuccessThird(current => !current)}
                             />
                           </FormGroup>
@@ -1042,6 +1182,7 @@ export default function CharacterSheet() {
                               type='checkbox'
                               style={{margin: "0"}}
                               value={dsFailureFirst}
+                              checked={dsFailureFirst}
                               onChange={() => setDSFailureFirst(current => !current)}
                             />
                             <Form.Check
@@ -1050,6 +1191,7 @@ export default function CharacterSheet() {
                               type="checkbox"
                               style={{margin: "0"}}
                               value={dsFailureSecond}
+                              checked={dsFailureSecond}
                               onChange={() => setDSFailureSecond(current => !current)}
                             />
                             <Form.Check
@@ -1058,6 +1200,7 @@ export default function CharacterSheet() {
                               type="checkbox"
                               style={{margin: "0"}}
                               value={dsFailureThird}
+                              checked={dsFailureThird}
                               onChange={() => setDSFailureThird(current => !current)}
                             />
                         </div>
