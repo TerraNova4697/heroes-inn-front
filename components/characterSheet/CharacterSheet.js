@@ -7,6 +7,8 @@ const axios = require("axios").default
 import globals from "../../globals";
 
 export default function CharacterSheet() {
+  const [user, setUser] = useState({})
+
   const [name, setName] = useState("");
   const [heroClass, setHeroClass] = useState("");
   const [level, setLevel] = useState(1);
@@ -85,12 +87,13 @@ export default function CharacterSheet() {
   const [otherProfsAndLanguages, setOtherProfsAndLanguages] = useState('')
 
   const [armorClass, setArmorClass] = useState('')
-  const [initianive, setInitiative] = useState('')
+  const [initiative, setInitiative] = useState('')
   const [speed, setSpeed] = useState('')
 
   const [hitPoints, setHitPoints] = useState('')
   const [maxHitPoints, setMaxHitPoints] = useState('')
   const [temporaryHitPoints, setTemporaryHitPoints] = useState('')
+  const [hitDice, setHitDice] = useState('')
 
   const [deathSavesSuccesses, setDeathSavesSuccesses] = useState(0)
   const [deathSavesFailures, setDeathSavesFailures] = useState(0)
@@ -112,7 +115,7 @@ export default function CharacterSheet() {
 
   const [equipment, setEquipment] = useState('')
 
-  const [heroImg, setHeroImg] = useState(defaultPicture)
+  const [heroImg, setHeroImg] = useState(globals.defaultImg)
   const [selectedFile, setSelectedFile] = useState()
 
   const [personalityTraits, setPersonalityTraits] = useState('')
@@ -128,8 +131,111 @@ export default function CharacterSheet() {
   const goClicked = (event) => {
     event.preventDefault();
   
+    const weaponsIDs = [];
+    for (let i = 0; i < weapons.length; i++) {
+      weaponsIDs.push(weapons[i].id)
+    }
     
+    const newHero = {
+      name: name,
+      hero_img: heroImg,
+      heroes_class: heroClass,
+      background: background,
+      race: race,
+      alignment: alignment,
+      exp_points: experience,
+      level: level,
+      inspiration: inspiration,
+      proficiency_bonus: proficiencyBonus,
+      armor_class: armorClass,
+      initiative: parseInt(initiative),
+      speed: parseInt(speed),
+      hit_points: parseInt(hitPoints),
+      max_hit_points: parseInt(maxHitPoints),
+      temporary_hit_points: parseInt(temporaryHitPoints),
+      hit_dice: hitDice,
+      death_saves_successes: deathSavesSuccesses,
+      death_saves_failures: deathSavesFailures,
+      other_profs_and_languages: otherProfsAndLanguages,
+      passive_wisdom: passiveWisdom,
+      attacks_and_spellcasting: attacksAndSpellcasting,
+      equipment: equipment,
+      features_and_traits: featuresAndTraits,
+      strenth: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+      wisdom: wisdom,
+      charisma: charisma,
+      strength_sb_active: strengthSbActive,
+      strength_sb: strengthSb,
+      dexterity_sb_active: dexteritySbActive,
+      dexterity_sb: dexteritySb,
+      constitution_sb_active: constitutionSbActive,
+      constitution_sb: constitutionSb,
+      intelligence_sb_active: intelligenceSbActive,
+      intelligence_sb: intelligenceSb,
+      wisdom_sb_active: wisdomSbActive,
+      wisdom_sb: wisdomSb,
+      charisma_sb_active: charismaSbActive,
+      charisma_sb: charismaSb,
+      acrobatics_active: acrobaticsActive,
+      acrobatics: acrobatics,
+      anim_handling_active: animHandlingActive,
+      anim_handling: animHandling,
+      arcana_active: arcanaActive,
+      arcana: arcana,
+      athletics_active: athleticsActive,
+      athletics: athletics,
+      deception_active: deceptionActive,
+      deception: deception,
+      history_active: historyActive,
+      history: history,
+      insight_active: insightActive,
+      insight: insight,
+      intimidation_active: intimidationActive,
+      intimidation: intimidation,
+      investigation_active: investigationActive,
+      investigation: investigation,
+      medicine_active: medicineActive,
+      medicine: medicine,
+      nature_active: natureActive,
+      nature: nature,
+      perception_active: perceptionActive,
+      perception: perception,
+      performance_active: performanceActive,
+      performance: performance,
+      persuasion_active: persuasionActive,
+      persuasion: persuasion,
+      religion_active: religionActive,
+      religion: religion,
+      sleight_of_hand_active: sleightOfHandActive,
+      sleight_of_hand: sleightOfHand,
+      stealth_active: stealthActive,
+      stealth: stealth,
+      personality_traits: personalityTraits,
+      ideals: ideals,
+      bonds: bonds,
+      flaws: flaws,
+      gold_coins: parseInt(goldCoins),
+      silver_coins: parseInt(silverCoins),
+      copper_coins: parseInt(copperCoins),
+      electron_coins: parseInt(electronCoins),
+      platinumCoins: parseInt(platinumCoins),
+      owner: user.id,
+      weapons: weaponsIDs
+    }
+
+    axios.post(
+      globals.serverDomain + '/heroes/api/v1/createhero/',
+      newHero
+    ).then(response => {
+      console.log(response)
+    }).catch(error => {
+      console.log(error)
+    })
     
+    console.log(newHero)
   };
 
   const deleteWeapon = (id) => {
@@ -142,7 +248,29 @@ export default function CharacterSheet() {
     setWeapons([...weapons, weapon])
   }
 
+  const loadUser = () => {
+    const token = JSON.parse(localStorage.getItem("token")).token;
+    axios
+      .get(globals.serverDomain + "/auth/users/me/", {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setUser(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.status === 401) {
+        }
+      });
+  }
+
   useEffect(() => {
+    loadUser()
+
     axios.get(globals.serverDomain + '/heroes/api/v1/weapons')
       .then(response => {
         setGlobalWeapon([...response.data])
@@ -775,7 +903,7 @@ export default function CharacterSheet() {
                       type="text"
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
-                      value={initianive} 
+                      value={initiative} 
                       onChange={event => setInitiative(event.target.value)}
                     />
                     <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
@@ -793,7 +921,7 @@ export default function CharacterSheet() {
                       onChange={event => setSpeed(event.target.value)}
                     />
                     <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
-                      Модификатор брони
+                      Скорость
                     </Form.Label>
                   </FormGroup>
                 </div>
@@ -838,6 +966,20 @@ export default function CharacterSheet() {
                     />
                     <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
                       ОЗ, макс
+                    </Form.Label>
+                  </FormGroup>
+
+                  <FormGroup style={{ width: "80px", textAlign: "center" }}>
+                    <Form.Control
+                      size="lg"
+                      type="text"
+                      placeholder=""
+                      style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
+                      value={hitDice} 
+                      onChange={event => setHitDice(event.target.value)}
+                    />
+                    <Form.Label style={{ margin: "0", fontSize: ".7rem" }}>
+                      Кубы здоровья
                     </Form.Label>
                   </FormGroup>
                 </div>
