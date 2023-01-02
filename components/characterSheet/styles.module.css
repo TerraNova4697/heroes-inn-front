@@ -159,3 +159,8 @@
     top: .5rem;
     right: .5rem;
   }
+
+  .btn {
+    margin-top: 1rem;
+    margin-bottom: 10rem;
+  }

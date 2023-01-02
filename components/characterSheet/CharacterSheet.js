@@ -22,17 +22,17 @@ export default function CharacterSheet() {
   const [alignment, setalignment] = useState("");
   const [experience, setExperience] = useState(0);
 
-  const [strength, setStrength] = useState(10);
+  const [strength, setStrength] = useState(0);
   const [strengthModificator, setStrengthModificator] = useState(0);
-  const [dexterity, setDexterity] = useState(10);
+  const [dexterity, setDexterity] = useState(0);
   const [dexterityModificator, setDexterityModificator] = useState(0);
-  const [constitution, setConstitution] = useState(10);
+  const [constitution, setConstitution] = useState(0);
   const [constitutionModificator, setConstitutionModificator] = useState(0);
-  const [intelligence, setIntelligence] = useState(10);
+  const [intelligence, setIntelligence] = useState(0);
   const [intelligenceModificator, setIntelligenceModificator] = useState(0);
-  const [wisdom, setWisdom] = useState(10);
+  const [wisdom, setWisdom] = useState(0);
   const [wisdomModificator, setWisdomModificator] = useState(0);
-  const [charisma, setCharisma] = useState(10);
+  const [charisma, setCharisma] = useState(0);
   const [charismaModificator, setCharismaModificator] = useState(0);
 
   const [inspiration, setInspiration] = useState(false)
@@ -140,6 +140,20 @@ export default function CharacterSheet() {
     for (let i = 0; i < weapons.length; i++) {
       weaponsIDs.push(weapons[i].id)
     }
+
+    console.log("WEAPON")
+    console.log(weaponsIDs)
+
+    const intInitiative = parseInt(initiative);
+    const intSpeed = parseInt(speed);
+    const intHitPoints = parseInt(hitPoints);
+    const intMaxHitPoints = parseInt(maxHitPoints);
+    const intTemporaryHitPoints = parseInt(temporaryHitPoints);
+    const intCopperCoins = parseInt(copperCoins);
+    const intSilverCoins = parseInt(silverCoins);
+    const intGoldCoins = parseInt(goldCoins);
+    const intElectronCoins = parseInt(electronCoins);
+    const intPlatinumCoins = parseInt(platinumCoins);
     
     const newHero = {
       name: name,
@@ -153,11 +167,11 @@ export default function CharacterSheet() {
       inspiration: inspiration,
       proficiency_bonus: proficiencyBonus,
       armor_class: armorClass,
-      initiative: parseInt(initiative),
-      speed: parseInt(speed),
-      hit_points: parseInt(hitPoints),
-      max_hit_points: parseInt(maxHitPoints),
-      temporary_hit_points: parseInt(temporaryHitPoints),
+      initiative: intInitiative ? intInitiative : 0,
+      speed: intSpeed ? intSpeed : 0,
+      hit_points: intHitPoints ? intHitPoints : 0,
+      max_hit_points: intMaxHitPoints ? intMaxHitPoints : 0,
+      temporary_hit_points: intTemporaryHitPoints ? intTemporaryHitPoints : 0,
       hit_dice: hitDice,
       death_saves_successes: deathSavesSuccesses,
       death_saves_failures: deathSavesFailures,
@@ -222,11 +236,11 @@ export default function CharacterSheet() {
       ideals: ideals,
       bonds: bonds,
       flaws: flaws,
-      gold_coins: parseInt(goldCoins),
-      silver_coins: parseInt(silverCoins),
-      copper_coins: parseInt(copperCoins),
-      electron_coins: parseInt(electronCoins),
-      platinumCoins: parseInt(platinumCoins),
+      gold_coins: intGoldCoins ? intGoldCoins : 0,
+      silver_coins: intSilverCoins ? intSilverCoins : 0,
+      copper_coins: intCopperCoins ? intCopperCoins : 0,
+      electron_coins: intElectronCoins ? intElectronCoins : 0,
+      platinumCoins: intPlatinumCoins ? intPlatinumCoins : 0,
       owner: user.id,
       weapons: weaponsIDs
     }
@@ -237,6 +251,7 @@ export default function CharacterSheet() {
     ).then(response => {
       const toast = new Toast()
       toast.success("Герой успешно создан!")
+      Router.push(`/hero/${response.data.id}`)
     }).catch(error => {
       const toast = new Toast()
       toast.error(`Ошибка: ${error}`)
@@ -288,17 +303,15 @@ export default function CharacterSheet() {
   }
 
   const loadHero = () => {
-    if ( query ) {
+    if ( query && query.id ) {
       const token = JSON.parse(localStorage.getItem("token")).token;
-      console.log(query)
       axios.get(globals.serverDomain + `/heroes/api/v1/herosheet/${query.id}`, {
         headers: {
           Authorization: `Token ${token}`,
         },
       }).then(response => {
         const hero = response.data;
-        console.log(hero.strength)
-        setHeroImg(globals.media + hero.hero_img);
+        setHeroImg(hero.hero_img);
         setName(hero.name);
         setHeroClass(hero.heroes_class);
         setBackground(hero.background);
@@ -631,7 +644,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto", height: "70px", textAlign: "center"}}
                       value={strength} 
-                      onChange={event => setStrength(event.target.value)}
+                      onChange={event => setStrength(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{strengthModificator < 0 ? `${strengthModificator}` : `+${strengthModificator}`}</Form.Text>
                   </FormGroup>
@@ -645,7 +658,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto",  height: "70px", textAlign: "center"}}
                       value={dexterity} 
-                      onChange={event => setDexterity(event.target.value)}
+                      onChange={event => setDexterity(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{dexterityModificator < 0 ? `${dexterityModificator}` : `+${dexterityModificator}`}</Form.Text>
                   </FormGroup>
@@ -659,7 +672,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto" , height: "70px", textAlign: "center"}}
                       value={constitution} 
-                      onChange={event => setConstitution(event.target.value)}
+                      onChange={event => setConstitution(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{constitutionModificator < 0 ? `${constitutionModificator}` : `+${constitutionModificator}`}</Form.Text>
                   </FormGroup>
@@ -673,7 +686,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto" , height: "70px", textAlign: "center"}}
                       value={intelligence} 
-                      onChange={event => setIntelligence(event.target.value)}
+                      onChange={event => setIntelligence(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{intelligenceModificator < 0 ? `${intelligenceModificator}` : `+${intelligenceModificator}`}</Form.Text>
                   </FormGroup>
@@ -687,7 +700,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto" , height: "70px", textAlign: "center"}}
                       value={wisdom} 
-                      onChange={event => setWisdom(event.target.value)}
+                      onChange={event => setWisdom(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{wisdomModificator < 0 ? `${wisdomModificator}` : `+${wisdomModificator}`}</Form.Text>
                   </FormGroup>
@@ -701,7 +714,7 @@ export default function CharacterSheet() {
                       placeholder=""
                       style={{ marginLeft: "auto", marginRight: "auto" , height: "70px", textAlign: "center"}}
                       value={charisma} 
-                      onChange={event => setCharisma(event.target.value)}
+                      onChange={event => setCharisma(parseInt(event.target.value))}
                     />
                     <Form.Text style={{ margin: "0" }}>{charismaModificator < 0 ? `${charismaModificator}` : `+${charismaModificator}`}</Form.Text>
                   </FormGroup>
@@ -1376,7 +1389,9 @@ export default function CharacterSheet() {
               </div>
             </Col>
           </Row>
-          <Button onClick={goClicked}>GO</Button>
+          { query.id ? null :
+          <Button className={styles.btn} onClick={goClicked}>Создать</Button>
+          }
         </Form>
 
         

@@ -11,6 +11,7 @@ const axios = require("axios").default;
 import globals from "../../globals";
 import addCharacterPicture from "../../public/add-image.jpg";
 import Link from "next/link";
+import Toast from '../../components/Toast';
 
 export default function HeroesList() {
   const [user, setUser] = useState({});
@@ -68,6 +69,21 @@ export default function HeroesList() {
     }
   };
 
+  const deleteHero = (id) => {
+    axios.delete(globals.serverDomain + `/heroes/api/v1/deletehero/${id}`)
+        .then(response => {
+            if (response.status === 204) {
+                const toast = new Toast()
+                toast.success("Герой удален");
+                setHeroes(heroes.filter(hero => hero.id !== id))
+            }
+        })
+        .catch(error => {
+            const toast = new Toast()
+            toast.error(error.message);
+        })
+  }
+
   useEffect(() => {
     loadUser();
     loadHeroes();
@@ -89,7 +105,7 @@ export default function HeroesList() {
       <Container>
         <div className={styles.heroesContainer}>
           {heroes.map((hero) => (
-            <HeroCard key={hero.id} hero={hero} />
+            <HeroCard key={hero.id} hero={hero} deleteHero={deleteHero}/>
           ))}
           <div className={styles.addCharacterContainer}>
             <Link href={"/createHero"}>
