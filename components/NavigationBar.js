@@ -94,15 +94,15 @@ export function NavigationBar() {
     <>
       <nav className="navbar navbar-dark bg-dark">
         <div className="container">
-          <a className="navbar-brand" href="#">
+          <Link className="navbar-brand" href={'/'}>
             {/* <Image src="/docs/5.2/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24" className="d-inline-block align-text-top"></Image> */}
-            Bootstrap
-          </a>
+            Таверна героев
+          </Link>
 
           {isLoggedIn ? (
             <>
               <span style={{ color: "white" }}>Привет, {username}</span>
-              <ul className="nav justify-content-end">
+              <ul className="nav justify-content-end" style={{gap: '1rem'}}>
               { !Router.pathname.includes('heroes-list') ? 
                 <li className="nav-item">
                   <Link className="btn btn-light" href={'/heroes-list'}>
@@ -125,7 +125,7 @@ export function NavigationBar() {
             </>
           ) : (
             <>
-              <ul className="nav justify-content-end">
+              <ul className="nav justify-content-end" style={{gap: '1rem'}}>
                 <li className="nav-item">
                   <Link
                     className="btn btn-outline-light"

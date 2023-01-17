@@ -121,7 +121,7 @@ export default function CharacterSheet() {
   const [equipment, setEquipment] = useState('')
 
   const [heroImg, setHeroImg] = useState(globals.defaultImg)
-  const [selectedFile, setSelectedFile] = useState()
+  const [selectedFile, setSelectedFile] = useState('')
 
   const [personalityTraits, setPersonalityTraits] = useState('')
   const [ideals, setIdeals] = useState('')
@@ -180,7 +180,7 @@ export default function CharacterSheet() {
       attacks_and_spellcasting: attacksAndSpellcasting,
       equipment: equipment,
       features_and_traits: featuresAndTraits,
-      strenth: strength,
+      strength: strength,
       dexterity: dexterity,
       constitution: constitution,
       intelligence: intelligence,
@@ -240,24 +240,67 @@ export default function CharacterSheet() {
       silver_coins: intSilverCoins ? intSilverCoins : 0,
       copper_coins: intCopperCoins ? intCopperCoins : 0,
       electron_coins: intElectronCoins ? intElectronCoins : 0,
-      platinumCoins: intPlatinumCoins ? intPlatinumCoins : 0,
+      platinum_coins: intPlatinumCoins ? intPlatinumCoins : 0,
       owner: user.id,
       weapons: weaponsIDs
     }
 
-    axios.post(
-      globals.serverDomain + '/heroes/api/v1/createhero/',
-      newHero
-    ).then(response => {
-      const toast = new Toast()
-      toast.success("Герой успешно создан!")
-      Router.push(`/hero/${response.data.id}`)
-    }).catch(error => {
-      const toast = new Toast()
-      toast.error(`Ошибка: ${error}`)
-    })
-    
-    console.log(newHero)
+    if (query.id) {
+      const token = JSON.parse(localStorage.getItem("token")).token;
+      axios.patch(
+        globals.serverDomain + `/heroes/api/v1/heroupdate/${query.id}`,
+        newHero,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      ).then(response => {
+        const toast = new Toast()
+        toast.success("Обновление успешно!")
+      }).catch(error => {
+        if (error.status === 400) {
+          const errors = error.response.data
+          const errorKeys = Object.keys(errors)
+          const toast = new Toast()
+          for (let i = 0; i < errorKeys.length; i++) {
+            const currentKey = errorKeys[i]
+            toast.error(errors[currentKey][0])
+          }
+        }
+        if (error.response.status === 403) {
+          const toast = new Toast()
+          toast.error("Упс! Похоже это персонаж другого игрока.")
+        }
+        
+      })
+    } else {
+      const token = JSON.parse(localStorage.getItem('token')).token;
+      const options = {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      }
+      axios.post(
+        globals.serverDomain + '/heroes/api/v1/createhero/',
+        newHero,
+        options
+      ).then(response => {
+        const toast = new Toast()
+        toast.success("Герой успешно создан!")
+        Router.push(`/hero/${response.data.id}`)
+      }).catch(error => {
+        if (error.status === 400) {
+          const errors = error.response.data
+          const errorKeys = Object.keys(errors)
+          const toast = new Toast()
+          for (let i = 0; i < errorKeys.length; i++) {
+            const currentKey = errorKeys[i]
+            toast.error(errors[currentKey][0])
+          }
+        } 
+      })
+    }
   };
 
   const deleteWeapon = (id) => {
@@ -268,6 +311,30 @@ export default function CharacterSheet() {
 
   const addWeapon = (weapon) => {
     setWeapons([...weapons, weapon])
+  }
+
+  const countDeathSaves = (successes, failures) => {
+    if (successes == 3) {
+      setDSSuccessFirst(true);
+      setDSSuccessSecond(true);
+      setDSSuccessThird(true);
+    } else if (successes == 2) {
+      setDSSuccessFirst(true);
+      setDSSuccessSecond(true);
+    } else if (successes == 1) {
+      setDSSuccessFirst(true);
+    }
+
+    if (failures == 3) {
+      setDSFailureFirst(true);
+      setDSFailureSecond(true);
+      setDSFailureThird(true);
+    } else if (failures == 2) {
+      setDSFailureFirst(true);
+      setDSFailureSecond(true);
+    } else if (failures == 1) {
+      setDSFailureFirst(true);
+    }
   }
 
   const loadUser = () => {
@@ -328,8 +395,6 @@ export default function CharacterSheet() {
         setMaxHitPoints(hero.max_hit_points);
         setTemporaryHitPoints(hero.temporary_hit_points);
         setHitDice(hero.hit_dice);
-        setDeathSavesSuccesses(hero.death_saves_successes);
-        setDeathSavesFailures(hero.death_saves_failures);
         setOtherProfsAndLanguages(hero.other_profs_and_languages);
         setPassiveWisdom(hero.passive_wisdom);
         setAttacksAndSpellcasting(hero.attacks_and_spellcasting);
@@ -399,8 +464,18 @@ export default function CharacterSheet() {
         setCopperCoins(hero.copper_coins);
         setElectronCoins(hero.electron_coins);
         setPlatinumCoins(hero.platinum_coins);
+        
+        countDeathSaves(hero.death_saves_successes, hero.death_saves_failures);
+        // console.log(hero.weapon)
+        setWeapons(hero.weapons)
+        
 
       }).catch(error => {
+        if (error.response.status === 403) {
+          const toast = new Toast()
+          toast.error("Упс! Похоже это персонаж другого игрока.")
+          console.log("ЭТО 403 ОШИБКА")
+        }
         console.log(error)
       })
     }
@@ -432,6 +507,7 @@ export default function CharacterSheet() {
     if(selectedFile) {
       const formData = new FormData();
       formData.append('image', selectedFile);
+      formData.append('old_image', heroImg)
 
       axios.post(globals.serverDomain + '/heroes/api/v1/image', formData)
         .then(response => {
@@ -1389,7 +1465,7 @@ export default function CharacterSheet() {
               </div>
             </Col>
           </Row>
-          { query.id ? null :
+          { query.id ? <Button className={styles.btn} onClick={goClicked}>Сохранить</Button> :
           <Button className={styles.btn} onClick={goClicked}>Создать</Button>
           }
         </Form>

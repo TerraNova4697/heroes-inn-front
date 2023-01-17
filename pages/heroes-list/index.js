@@ -45,7 +45,7 @@ export default function HeroesList() {
 
   const loadHeroes = () => {
     if (localStorage.getItem('token') !== null) {
-      let token = JSON.parse(localStorage.getItem("token")).token;
+      const token = JSON.parse(localStorage.getItem("token")).token;
       axios
         .get(globals.serverDomain + "/heroes/api/v1/heroeslist/", {
           headers: {
@@ -70,7 +70,13 @@ export default function HeroesList() {
   };
 
   const deleteHero = (id) => {
-    axios.delete(globals.serverDomain + `/heroes/api/v1/deletehero/${id}`)
+    const token = JSON.parse(localStorage.getItem('token')).token;
+    const options = {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    }
+    axios.delete(globals.serverDomain + `/heroes/api/v1/deletehero/${id}`, options)
         .then(response => {
             if (response.status === 204) {
                 const toast = new Toast()
